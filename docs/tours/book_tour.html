@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Бронирование — {{ tour.title }}{% endblock %}
+{% block content %}
+<section style="padding:2.5rem 0 4rem;">
+  <div class="wrap" style="max-width:560px;">
+    <p style="margin:0 0 1rem;"><a href="{{ tour.get_absolute_url }}" style="color:var(--text-muted);">← К путёвке</a></p>
+    <h1 class="section-title" style="font-size:1.65rem;">Бронирование</h1>
+    <p style="color:var(--text-muted);">{{ tour.title }}</p>
+    <p>Базовая цена: <strong style="color:var(--warm);">{{ tour.price|floatformat:0 }} ₽</strong> за человека.</p>
+    <form method="post" class="form-stack">
+      {% csrf_token %}
+      {% for field in form %}
+      <label class="field-label">{{ field.label }}{{ field }}</label>
+      {{ field.errors }}
+      {% endfor %}
+      <button type="submit" class="btn btn-primary" style="margin-top:1rem;">Перейти к оплате</button>
+    </form>
+  </div>
+</section>
+{% endblock %}
