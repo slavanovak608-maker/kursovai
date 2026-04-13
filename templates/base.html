@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Туристические путевки{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap inner">
+      <a class="logo" href="{% url 'tours:home' %}">Путёвки<span>.</span>тур</a>
+      <nav class="nav">
+        <a href="{% url 'tours:home' %}" {% if request.resolver_match and request.resolver_match.url_name == 'home' %}class="active"{% endif %}>Главная</a>
+        <a href="{% url 'tours:list' %}" {% if request.resolver_match and request.resolver_match.url_name == 'list' %}class="active"{% endif %}>Каталог</a>
+        {% if user.is_authenticated %}
+        <a href="{% url 'tours:my_bookings' %}" {% if request.resolver_match and request.resolver_match.url_name == 'my_bookings' %}class="active"{% endif %}>Мои заказы</a>
+        <span class="nav-user">{{ user.username }}</span>
+        <form action="{% url 'tours:logout' %}" method="post" class="nav-logout">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-ghost" style="padding:0.45rem 1rem;font-size:0.85rem;">Выход</button>
+        </form>
+        {% else %}
+        <a href="{% url 'tours:login' %}">Вход</a>
+        <a href="{% url 'tours:register' %}" class="btn btn-ghost" style="padding:0.45rem 1rem;font-size:0.85rem;">Регистрация</a>
+        {% endif %}
+        <a href="/admin/" class="btn btn-ghost" style="padding:0.45rem 1rem;font-size:0.85rem;opacity:0.75;">Админка</a>
+      </nav>
+    </div>
+  </header>
+  {% if messages %}
+  <div class="wrap messages-wrap">
+    <ul class="messages">
+      {% for message in messages %}
+      <li class="msg {{ message.tags }}">{{ message }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+  <footer class="site-footer">
+    <div class="wrap">Курсовой проект: разработка ПО «Туристические путевки» · Django + SQLite</div>
+  </footer>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Главная — Туристические путевки{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="wrap">
+    <h1>Откройте для себя мир путешествий</h1>
+    <p class="lead">Каталог туристических путёвок: направления, сроки, цены и яркие фото — всё управляется через удобную админ-панель.</p>
+    <a class="btn btn-primary" href="{% url 'tours:list' %}">Смотреть путёвки</a>
+  </div>
+</section>
+<section style="padding-bottom:4rem;">
+  <div class="wrap">
+    {% if categories %}
+    <h2 class="section-title">Направления</h2>
+    <div class="chip-row" style="margin-bottom:2.5rem;">
+      {% for c in categories %}
+      <a class="chip" href="{% url 'tours:list' %}?category={{ c.slug }}">{{ c.name }}</a>
+      {% endfor %}
+    </div>
+    {% endif %}
+    <h2 class="section-title">Популярные путёвки</h2>
+    {% if featured_tours %}
+    <div class="grid-cards">
+      {% for tour in featured_tours %}
+      <article class="card">
+        <a href="{{ tour.get_absolute_url }}" class="card-image {% if not tour.image %}placeholder{% endif %}">
+          {% if tour.image %}
+          <img src="{{ tour.image.url }}" alt="{{ tour.title }}" width="400" height="250" loading="lazy">
+          {% endif %}
+        </a>
+        <div class="card-body">
+          <span class="badge">{{ tour.category.name }}</span>
+          <h3><a href="{{ tour.get_absolute_url }}">{{ tour.title }}</a></h3>
+          <div class="meta">{{ tour.destination }} · {{ tour.duration_days }} дн.</div>
+          <p style="margin:0;color:var(--text-muted);font-size:0.9rem;">{{ tour.short_description|truncatewords:18 }}</p>
+          <div class="price">{{ tour.price|floatformat:0 }} <small>₽ с чел.</small></div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+    <p style="margin-top:2rem;text-align:center;">
+      <a class="btn btn-ghost" href="{% url 'tours:list' %}">Все путёвки</a>
+    </p>
+    {% else %}
+    <div class="empty-state">
+      <p>Пока нет опубликованных путёвок. Зайдите в <a href="/admin/">админку</a> и добавьте категории и туры с фотографиями.</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

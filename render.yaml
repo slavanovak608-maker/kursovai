@@ -1,0 +1,34 @@
+# Blueprint Render: https://render.com/docs/blueprint-spec
+# После push в GitHub: Dashboard → New → Blueprint → выбрать репозиторий.
+# Либо создайте Web Service вручную и укажите те же build/start и переменные.
+
+services:
+  - type: web
+    name: kursova-tours
+    runtime: python
+    plan: free
+    region: frankfurt
+    buildCommand: chmod +x build.sh && ./build.sh
+    startCommand: gunicorn config.wsgi:application --bind 0.0.0.0:$PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.8"
+      - key: DEBUG
+        value: "False"
+      - key: SECRET_KEY
+        generateValue: true
+      # Если подключите PostgreSQL в панели Render, добавьте переменную DATABASE_URL
+      # (Render подставит её сам при «Link Database»).
+
+# Раскомментируйте блок ниже, если в аккаунте доступна БД Render (платный план).
+# Тогда в web-сервисе добавьте:
+#   envVars:
+#     - key: DATABASE_URL
+#       fromDatabase:
+#         name: kursova-db
+#         property: connectionString
+#
+# databases:
+#   - name: kursova-db
+#     databaseName: kursova
+#     user: kursova
